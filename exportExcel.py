@@ -5,7 +5,6 @@ from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.formatting.rule import CellIsRule, FormulaRule
 from datetime import datetime
 import openpyxl
-import locale
 import io
 
 # My packages
@@ -211,7 +210,6 @@ def plus90(hour):
 
 def changeDate(date):
     try:
-        locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
         date += '/2024'
         parsed_date = datetime.strptime(date, '%d/%m/%Y')
         formatted_date = parsed_date.strftime('%A %d %B')
