@@ -32,6 +32,7 @@ def sendGetRequest(url):
         return response.json()
     print("Erreur de la requete get : " + url)
     print(response.text)
+    print(response.json())
     return None
 
 def sendPostRequestWithJson(url, headers, json):
@@ -40,6 +41,7 @@ def sendPostRequestWithJson(url, headers, json):
         return True
     print("Erreur de la requete post : " + url)
     print(response.text)
+    print(response.json())
     return False
 
 def sendDeleteRequestWithJson(url, headers, json):
@@ -48,6 +50,7 @@ def sendDeleteRequestWithJson(url, headers, json):
         return True
     print("Erreur de la requete delete : " + url)
     print(response.text)
+    print(response.json())
     return False
 
 def getRefreshToken():
@@ -67,6 +70,7 @@ def getToken():
         return response.json()["access_token"]
     print("Erreur lors de la récupération du token")
     print(response.text)
+    print(response.json())
     return None
 
 def getHomologationId():
