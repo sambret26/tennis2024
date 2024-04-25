@@ -1,3 +1,1 @@
 import controller
-
-controller.main()
