@@ -1,0 +1,52 @@
+import sqlite3
+
+def fill():
+    conn = sqlite3.connect('DB.db')
+    c = conn.cursor()
+
+    # Fill channel in DB
+    query = "INSERT INTO Channels (Category, ChannelId, Type) VALUES (?, ?, ?)"
+    c.execute(query, ('GuildId', 962449983452368956, 'Logs'))
+    c.execute(query, ('SM', 962457751202709514, 'Logs'))
+    c.execute(query, ('SD', 962457759314489475, 'Logs'))
+    c.execute(query, ('DM', 962457698610348122, 'Logs'))
+    c.execute(query, ('DD', 971541409964367962, 'Logs'))
+    c.execute(query, ('DX', 962457740834381885, 'Logs'))
+    c.execute(query, ('G', 962457673398358017, 'Logs'))
+    c.execute(query, ('ERROR', 962466359030214686, 'Logs'))
+    c.execute(query, ('SM', 962475438763040808, None))
+    c.execute(query, ('SD', 962475455628320798, None))
+    c.execute(query, ('DM', 962475475240878112, None))
+    c.execute(query, ('DD', 971541657537380373, None))
+    c.execute(query, ('DX', 962475494710853662, None))
+    c.execute(query, ('G', 962475376599244851, None))
+    c.execute(query, ('NOTIF', 1117555553384804423, 'Logs'))
+    c.execute(query, ('WA', 1119751551892860988, 'Logs'))
+    c.execute(query, ('MOJA', 1232385237401600180, 'Logs'))
+    c.execute(query, ('CALENDAR', 1232385305663901697, 'Logs'))
+    c.execute(query, ('DB', 1232385347879571600, 'Logs'))
+    query = "INSERT INTO Settings (Data, State) VALUES (?, ?)"
+    c.execute(query, ('CalendarActive', 1))
+    c.execute(query, ('MojaActive', 1))
+    c.execute(query, ('CalendarState', 0))
+    query = "INSERT INTO Rankings (Simple, Double) VALUES (?, ?)"
+    c.execute(query, ('NC', '19'))
+    c.execute(query, ('40', '18'))
+    c.execute(query, ('30/5', '17'))
+    c.execute(query, ('30/4', '16'))
+    c.execute(query, ('30/3', '15'))
+    c.execute(query, ('30/2', '14'))
+    c.execute(query, ('30/1', '13'))
+    c.execute(query, ('30', '12'))
+    c.execute(query, ('15/5', '11'))
+    c.execute(query, ('15/4', '10'))
+    c.execute(query, ('15/3', '9'))
+    c.execute(query, ('15/2', '8'))
+    c.execute(query, ('15/1', '7'))
+    c.execute(query, ('15', '6'))
+    query = "INSERT INTO Courts (Name) VALUES (?)"
+    c.execute(query, ('1',))
+    c.execute(query, ('2',))
+    c.execute(query, ('3',))
+    conn.commit()
+    conn.close()

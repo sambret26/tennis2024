@@ -1,0 +1,14 @@
+RANKINGS = ["NC", "40", "30/5", "30/4", "30/3", "30/2", "30/1", "30", "15/5", "15/4", "15/3", "15/2", "15/1", "15"]
+CHANNEL_CATEGORIES = ["G", "SM", "SD", "DM", "DD", "DX", "NOTIF"]
+SCOPES=['https://www.googleapis.com/auth/calendar']
+LOSE = ["6/7", "5/7", "4/6", "3/6", "2/6", "1/6", "0/6"]
+WIN = ["7/6", "7/5", "6/4", "6/3", "6/2", "6/1", "6/0"]
+BACKUP_DB_FILENAME = "./BACKUP_DB/DBDATE.db"
+CATEGORIES = ["SM", "SD", "DM", "DD", "DX"]
+BACKUP_DB_PATHNAME = "./BACKUP_DB/"
+DB_FILENAME = "./DB.db"
+EMBED_COLOR = 0x9f1994
+TEAM_SEPARATOR = "--"
+GREEN = "green"
+BLUE = "blue"
+RED = "red"
