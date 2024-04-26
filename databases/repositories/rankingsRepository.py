@@ -10,29 +10,26 @@ class RankingsRepository:
 
     # GETTERS
     def getRankingsByFftRanking(self, session, fftId):
-        result = session.query(Ranking.simple).filter(Ranking.fftSimple == fftId).scalar()
-        if result != None : return result
-        return session.query(Ranking.double).filter(Ranking.fftDouble == fftId).scalar()
+        result = session.query(Ranking).filter(Ranking.fft == fftId).scalar()
+        return result
 
-    def getSimpleRankingByDoubleRanking(self, session, fftId):
-        return session.query(Ranking.simple).filter(Ranking.double == fftId).scalar()
+    def getSimpleRankingByDoubleRanking(self, session, double):
+        return session.query(Ranking.simple).filter(Ranking.double == double).scalar()
 
     def getSimpleRankingByFftRanking(self, session, fftId):
-        result = session.query(Ranking.simple).filter(Ranking.fftSimple == fftId).scalar()
-        if result != None : return result
-        return session.query(Ranking.simple).filter(Ranking.fftDouble == fftId).scalar()
+        return session.query(Ranking.simple).filter(Ranking.fft == fftId).scalar()
 
     # SETTERS
-    def setFftSimpleRankingBySimpleRanking(self, session, simple, fftSimple):
-        session.query(Ranking).filter(Ranking.simple == simple).update({Ranking.fftSimple: fftSimple})
+    def setFftRankingBySimpleRanking(self, session, simple, fftId):
+        session.query(Ranking).filter(Ranking.simple == simple).update({Ranking.fft: fftId})
         session.commit()
 
-    def setFftDoubleRankingByDoubleRanking(self, session, double, fftDouble):
-        session.query(Ranking).filter(Ranking.double == double).update({Ranking.fftDouble: fftDouble})
+    def setFftRankingByDoubleRanking(self, session, double, fftId):
+        session.query(Ranking).filter(Ranking.double == double).update({Ranking.fft: fftId})
         session.commit()
 
     #INSERT
-    def insertRanking(self, session, simple, double, fftSimple, fftDouble):
-        newRanking = Ranking(simple=simple, double=double, fftSimple=fftSimple, fftDouble=fftDouble)
+    def insertRanking(self, session, simple, double, fftId):
+        newRanking = Ranking(simple=simple, double=double, fft=fftId)
         session.add(newRanking)
         session.commit()

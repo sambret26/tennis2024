@@ -6,5 +6,4 @@ class Ranking(Base):
     id = Column(Integer, primary_key=True)
     simple = Column(String)
     double = Column(String)
-    fftSimple = Column(String)
-    fftDouble = Column(String)
+    fft = Column(String)
