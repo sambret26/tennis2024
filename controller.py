@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import schedule
 import asyncio
 import discord
+import fillDB
 import os
 
 # My packages
@@ -263,6 +264,7 @@ def reload_DB():
 # Recuring Tasks
 async def recurring_task():
     await bot.wait_until_ready()
+    fillDB.fill()
     while not bot.is_closed():
         schedule.run_pending()
         await asyncio.sleep(1)
