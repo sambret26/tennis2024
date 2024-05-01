@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Global packages
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import requests
 import os
@@ -24,6 +25,9 @@ courtsRepository = CourtsRepository(engine)
 teamsRepository = TeamsRepository(engine)
 
 load_dotenv()
+
+accessToken = None
+tokenExpiry = None
 
 def sendGetRequest(url):
     headers = {"Authorization" : f"Bearer {getToken()}"}
@@ -57,6 +61,9 @@ def getRefreshToken():
     return os.environ.get("RefreshToken")
 
 def getToken():
+    global accessToken, tokenExpiry
+    if accessToken and tokenExpiry and tokenExpiry > datetime.now():
+        return accessToken
     url = os.environ.get("TokenUrl")
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     data = {
@@ -67,7 +74,11 @@ def getToken():
     }
     response = requests.post(url, headers=headers, data=data)
     if response.status_code == 200:
-        return response.json()["access_token"]
+        tokenData = response.json()
+        accessToken = tokenData["access_token"]
+        tokenExpiry = datetime.now() + timedelta(seconds=(tokenData["expires_in"]-30))
+        return accessToken
+    accessToken = None
     print("Erreur lors de la récupération du token")
     print(response.text)
     print(response.json())
