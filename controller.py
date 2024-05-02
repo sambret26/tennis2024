@@ -273,7 +273,7 @@ def main():
     schedule.every().minute.at(":00").do(lambda: asyncio.create_task(F.sendMessages(bot)))
     schedule.every().minute.at(":30").do(lambda: asyncio.create_task(service.updatePlayersAndSendNotif()))
     schedule.every().day.at("06:58").do(lambda: asyncio.create_task(service.pgWhatsapp(bot)))
-    schedule.every().day.at("04:00").do(lambda: asyncio.create_task(calendar.main()))
+    schedule.every().day.at("04:00").do(lambda: asyncio.create_task(calendar.launch_update()))
     bot.loop.create_task(recurring_task())
     bot.run(os.environ.get("DiscordToken"))
 
