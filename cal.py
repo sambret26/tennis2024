@@ -82,7 +82,7 @@ def updateOneEvent(id):
     updateSingleEvent(eventInDB)
     settingsRepository.setCalendarStatus(session, 0)
 
-def launch_update():
+async def launch_update():
     if settingsRepository.setCalendarStatus(session, 0):
         update()
 
