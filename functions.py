@@ -358,7 +358,7 @@ def code_credentials(credentials):
 def findCreds():
     creds = None
     filename = os.environ.get("TokenFilename")
-    if path.exists(filename + ".pkl"):
+    if path.exists("./" + filename + ".pkl"):
         obj = load_crypted(filename)
         creds = obj["credentials"]
     else :
