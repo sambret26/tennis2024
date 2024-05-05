@@ -44,6 +44,7 @@ def sendPostRequestWithJson(url, headers, json):
     if response.status_code == 200:
         return True
     print("Erreur de la requete post : " + url)
+    print(srt(json))
     print(response.text)
     print(response.json())
     return False
@@ -53,6 +54,7 @@ def sendDeleteRequestWithJson(url, headers, json):
     if response.status_code == 200:
         return True
     print("Erreur de la requete delete : " + url)
+    print(srt(json))
     print(response.text)
     print(response.json())
     return False
