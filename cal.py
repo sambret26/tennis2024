@@ -84,7 +84,8 @@ def updateOneEvent(id):
 
 async def launch_update():
     if settingsRepository.setCalendarStatus(session, 0):
-        update()
+        await deleteCalendar()
+        await updateCalendar()
 
 def getService():
     return build('calendar', 'v3', credentials=F.findCreds())
