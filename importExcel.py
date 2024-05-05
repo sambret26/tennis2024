@@ -174,7 +174,6 @@ def orZero(value):
 def changeDate(date):
     if date is None: return None
     try:
-        locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
         newDate = date + '/2024'
         parsed_date = datetime.strptime(newDate, '%d/%m/%Y')
         formatted_date = parsed_date.strftime('%A %d %B')
@@ -184,7 +183,6 @@ def changeDate(date):
 
 def reverseChangeDate(formatted_date):
     try:
-        locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
         parsed_date = datetime.strptime(formatted_date, '%A %d %B')
         reversed_date = parsed_date.strftime('%d/%m')
         return reversed_date
