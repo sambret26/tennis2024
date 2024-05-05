@@ -316,11 +316,11 @@ def getDateFromFileName(f):
     return f
 
 def load(name):
-    with open("DB/" + name + ".pkl", 'rb') as f:
+    with open(name + ".pkl", 'rb') as f:
         return pickle.load(f)
 
 def load_crypted(name):
-    with open('DB/' + name + '.pkl', 'rb') as f:
+    with open(name + '.pkl', 'rb') as f:
         crypted = pickle.load(f)
         return decode_credentials(crypted)
 
@@ -358,13 +358,13 @@ def code_credentials(credentials):
 def findCreds():
     creds = None
     filename = os.environ.get("TokenFilename")
-    if path.exists("DB/" + filename + ".pkl"):
+    if path.exists(filename + ".pkl"):
         obj = load_crypted(filename)
         creds = obj["credentials"]
     if not creds or not obj["valid"]:
         creds.refresh(Request())
         crypted_creds = code_credentials(creds)
-        with open("DB/" + filename + ".pkl", 'wb') as token:
+        with open(filename + ".pkl", 'wb') as token:
             pickle.dump(crypted_creds, token)
     return creds
 
