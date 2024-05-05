@@ -361,6 +361,9 @@ def findCreds():
     if path.exists(filename + ".pkl"):
         obj = load_crypted(filename)
         creds = obj["credentials"]
+    else :
+        print("File not found : " + filename)
+        return None
     if not creds or not obj["valid"]:
         creds.refresh(Request())
         crypted_creds = code_credentials(creds)
