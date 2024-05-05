@@ -5,7 +5,6 @@ from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from datetime import datetime
 import openpyxl
 import discord
-import locale
 import io
 
 #My packages
