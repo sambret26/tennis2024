@@ -264,7 +264,8 @@ def reload_DB():
 # Recuring Tasks
 async def recurring_task():
     await bot.wait_until_ready()
-    if os.environ.get("Prod") == "true" : fillDB.fill()
+    load = await F.loadDB(bot)
+    if not load and os.environ.get("Prod") == "true" : fillDB.fill()
     while not bot.is_closed():
         schedule.run_pending()
         await asyncio.sleep(1)

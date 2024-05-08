@@ -8,6 +8,7 @@ from google.oauth2.credentials import Credentials
 from discord_slash import ButtonStyle
 from datetime import datetime as date
 from datetime import timedelta
+from dotenv import load_dotenv
 import os.path as path
 import subprocess
 import discord
@@ -25,6 +26,9 @@ from databases.repositories.teamsRepository import TeamsRepository
 from databases.base import engine, session
 from constants import constants
 import update
+
+# Dotenv
+load_dotenv()
 
 messagesRepository = MessagesRepository(engine)
 channelsRepository = ChannelsRepository(engine)
@@ -377,5 +381,14 @@ async def importDB(message):
     await message.attachments[0].save('./DB.db')
     await message.channel.send(constants.DB_SAVE.replace("FILENAME", file.filename))
 
-async def importExcel(message):
-    return
+async def loadDB(bot):
+    channelId = os.environ.get("DBId")
+    channel = await bot.fetch_channel(channelId)
+    messages = await channel.history(limit=1).flatten()
+    if not messages : return False
+    message = messages[0]
+    if not message.attachments: return False
+    file = await message.attachments[0].to_file()
+    if file.filename[-3:] != '.db': return False
+    await message.attachments[0].save('./DB.db')
+    return True
