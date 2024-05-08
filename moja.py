@@ -305,6 +305,7 @@ def updateDBPlayers(players):
         id = playersRepository.searchPlayer(session, player)
         if id:
             checkCategories(player, id)
+            checkRanking(player,id)
             playersRepository.setPlayerToOne(session, player, id)
         else:
             playersRepository.insertPlayer(session, player)
@@ -372,6 +373,12 @@ def checkCategories(player, id):
             newPlayer = [0, player["Firstname"], player["Lastname"], player["Ranking"], player["Club"]]
             message = f"Désinscription de {player[1]} {player[2]} ({player[4]}) classé(e) {player[4]}"
             messagesRepository.insertMessage(session, category, message)
+
+def checkRanking(player, id):
+    playerInDB = playersRepository.getPlayerInfosById(session, id):
+    if playerInDB.ranking != player['Ranking']:
+        message = f"Reclassement : {playerInDB.firstName} {player.lastName} ({playerInDB.ranking} => {player['Ranking']})"
+        messagesRepository.insertMessage(session, "G", message)
 
 def sendNotifAdd(player):
     message = f"Nouvelle inscription : {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"

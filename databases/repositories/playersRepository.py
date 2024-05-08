@@ -54,7 +54,7 @@ class PlayersRepository:
         session.commit()
 
     def setPlayerToOne(self, session, player, id):
-        session.query(Player).filter(Player.id == id).update({Player.state: 1, Player.sm: player["SM"], Player.sd: player["SD"], Player.dm: player["DM"], Player.dd: player["DD"], Player.dx: player["DX"]})
+        session.query(Player).filter(Player.id == id).update({Player.state: 1, Player.sm: player["SM"], Player.sd: player["SD"], Player.dm: player["DM"], Player.dd: player["DD"], Player.dx: player["DX"], Player.ranking: player["Ranking"], Player.club: player["Club"]})
         session.commit()
 
     # INSERT
