@@ -377,7 +377,7 @@ def checkCategories(player, id):
 def checkRanking(player, id):
     playerInDB = playersRepository.getPlayerInfosById(session, id)
     if playerInDB.ranking != player['Ranking']:
-        message = f"Reclassement : {playerInDB.firstName} {player.lastName} ({playerInDB.ranking} => {player['Ranking']})"
+        message = f"Reclassement : {playerInDB.firstName} {playerInDB.lastName} ({playerInDB.ranking} => {player['Ranking']})"
         messagesRepository.insertMessage(session, "G", message)
 
 def sendNotifAdd(player):
