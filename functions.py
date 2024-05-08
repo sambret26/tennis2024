@@ -390,8 +390,5 @@ async def loadDB(bot):
     if not message.attachments: return False
     file = await message.attachments[0].to_file()
     if file.filename[-3:] != '.db': return False
-    currentDate = getCurrentDate().strftime("_%m_%d_%Hh%M")
-    filename = constants.BACKUP_DB_FILENAME.replace("DATE", currentDate)
-    subprocess.run(constants.SAVE_OLD_DB_CMD.replace("FILENAME", filename), shell=True, capture_output=True, text=True)
     await message.attachments[0].save('./DB.db')
     return True
