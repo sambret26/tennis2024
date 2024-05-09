@@ -371,7 +371,7 @@ def checkCategories(player, id):
             messagesRepository.insertMessage(session, category, message)
         elif (categoriesInDB[index] == 1 and player[category] == 0):
             newPlayer = [0, player["Firstname"], player["Lastname"], player["Ranking"], player["Club"]]
-            message = f"Désinscription de {player[1]} {player[2]} ({player[4]}) classé(e) {player[4]}"
+            message = f"Désinscription de {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"
             messagesRepository.insertMessage(session, category, message)
 
 def checkRanking(player, id):
