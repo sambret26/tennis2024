@@ -233,7 +233,7 @@ async def pgWhatsapp(bot):
     channelId = channelsRepository.getLogChannelId(session, "WA")
     channel = await bot.fetch_channel(channelId)
     matchs = False
-    date = F.getCurrentDate().strftime("%d\%m")
+    date = F.getCurrentDate().strftime("%d/%m")
     matchs = matchsRepository.getMatchsByDate(session, date)
     if matchs == None or matchs == []:
         await channel.send(constants.NO_PG.replace("DATE", date))
