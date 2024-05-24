@@ -247,10 +247,10 @@ def addMatch(matchs, match, matchNumber, tabName):
     else:
         player1Id, player2Id = getTeamsIds(match)
     winner = match["equipeGagnante"]
-    winnerId = 0
+    winnerId = null
     if winner == "equipeA" : winnerId = player1Id
     elif winner == "equipeB" : winnerId = player2Id
-    finish = (winnerId != 0)
+    finish = (winnerId != null)
     score = ""
     sets = match["sets"]
     if not sets : sets = []

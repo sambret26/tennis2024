@@ -85,7 +85,7 @@ def addMatch(sheet, matchName, rowNum):
     writeCell(sheet, 6, rowNum, orZero(panel))
     if(player1Id and winnerId == player1Id): writeCell(sheet, 7, rowNum, player1)
     elif(player2Id and winnerId == player2Id): writeCell(sheet, 7, rowNum, player1)
-    else: writeCell(sheet, 7, rowNum, 0)
+    else: writeCell(sheet, 7, rowNum, '')
     writeCell(sheet, 8, rowNum, orZero(score))
     writeCell(sheet, 9, rowNum, orZero(nextRound))
 
