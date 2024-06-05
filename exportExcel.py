@@ -31,7 +31,7 @@ def initiateMatchsSheet(sheet):
 def initiateScheduleSheet(sheet):
     for colNum, header in enumerate(constants.SCHEDULE_HEADERS, start=1): writeCell(sheet, colNum, 1, header)
     for colNum, width in enumerate(constants.SCHEDULE_COLUMN_WIDTHS, start=1): sheet.column_dimensions[openpyxl.utils.get_column_letter(colNum)].width = width
-    for day in range(16,31): addSchedule(sheet, f'{day}/06')
+    for day in range(15,31): addSchedule(sheet, f'{day}/06')
 
 def initiatePlayersSheet(sheet):
     for colNum, header in enumerate(constants.PLAYERS_HEADERS, start=1): writeCell(sheet, colNum, 1, header)
@@ -183,7 +183,7 @@ def addSlot(timeSlot, date, court):
 
 def getHref(date):
     day = int(date.split("/")[0])
-    if day in [22,23,29,30] : return constants.WEEKEND_START_HOUR
+    if day in [15,16,22,23,29,30] : return constants.WEEKEND_START_HOUR
     return constants.WEEK_START_HOUR
 
 def findDiff(hour, nextHour):

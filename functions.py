@@ -232,7 +232,7 @@ def notADay(day):
 
 def notInTournament(day):
     if day.split("/")[1] != "06" : return True
-    if int(day.split("/")[0]) > 15 and int(day.split("/")[0]) < 32: return False
+    if int(day.split("/")[0]) > 14 and int(day.split("/")[0]) < 32: return False
     return True
 
 def convertInHour(hour):
