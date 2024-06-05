@@ -54,7 +54,7 @@ def sendDeleteRequestWithJson(url, headers, json):
     if response.status_code == 200:
         return True
     print("Erreur de la requete delete : " + url)
-    print(srt(json))
+    print(str(json))
     print(response.text)
     print(response.json())
     return False
