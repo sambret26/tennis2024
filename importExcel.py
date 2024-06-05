@@ -353,7 +353,7 @@ def setPlayer1(matchId, playerId, oldPlayerId):
             matchsRepository.setPlayer1(session, matchId, playerId)
     else :
         player = playersRepository.getFftIdAndInscriptionIdById(session, oldPlayerId)
-        if moja.deletePlayer(matchFftId, player, "A"):
+        if player and moja.deletePlayer(matchFftId, player, "A"):
             matchsRepository.setPlayer1(session, matchId, playerId)
 
 def setPlayer2(matchId, playerId, oldPlayerId):
@@ -364,7 +364,7 @@ def setPlayer2(matchId, playerId, oldPlayerId):
             matchsRepository.setPlayer2(session, matchId, playerId)
     else :
         player = playersRepository.getFftIdAndInscriptionIdById(session, oldPlayerId)
-        if moja.deletePlayer(matchFftId, player, "B"):
+        if player and moja.deletePlayer(matchFftId, player, "B"):
             matchsRepository.setPlayer2(session, matchId, playerId)
 
 def setCourt(matchId, courtName):
