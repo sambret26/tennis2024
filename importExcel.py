@@ -204,7 +204,7 @@ def getPlayerIdByNameAndMatchType(player, matchName):
 
 def getPlayerNameByIdAndMatchType(playerId, matchName):
     if not playerId or playerId == "None" : return None
-    if playerId.startswith("V"): return playerId
+    if playerId.startswith("V") or playerId.startswith("QE"): return playerId
     if matchName.startswith("S"):
         player = playersRepository.getPlayerNameById(session, playerId)
         if player : return f"{player.lastName} {player.firstName}"
