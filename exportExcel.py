@@ -130,10 +130,13 @@ def addSchedule(sheet, date):
     matchsCourt1 = matchsRepository.getMatchsByDateAndCourt(session, date, court1.id)
     matchsCourt2 = matchsRepository.getMatchsByDateAndCourt(session, date, court2.id)
     matchsCourt3 = matchsRepository.getMatchsByDateAndCourt(session, date, court3.id)
+    sortedMatchsCourt1 = sorted(matchsCourt1, key=lambda match: inMinutes(match.hour))
+    sortedMatchsCourt2 = sorted(matchsCourt2, key=lambda match: inMinutes(match.hour))
+    sortedMatchsCourt3 = sorted(matchsCourt3, key=lambda match: inMinutes(match.hour))
     if isNotPast(date):
-        timeSlots1 = addSlot(matchsCourt1, date, court1.id)
-        timeSlots2 = addSlot(matchsCourt2, date, court2.id)
-    timeSlots = timeSlots1 + timeSlots2 + matchsCourt3
+        timeSlots1 = addSlot(sortedMatchsCourt1, date, court1.id)
+        timeSlots2 = addSlot(sortedMatchsCourt2, date, court2.id)
+    timeSlots = timeSlots1 + timeSlots2 + sortedMatchsCourt3
     if len(timeSlots) == 0: return
     timeSlots.sort(key=lambda ts: inMinutes(ts[0]))
     firstRow = sheet.max_row + 1
