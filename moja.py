@@ -102,8 +102,11 @@ def getPlayersInformations(retry=5):
         category = epreuve["libelle"][0:2]
         datas = sendGetRequest(os.environ.get("EpreuvesDataUrl").replace("EPREUVE_ID", str(epreuve['epreuveId'])))
         for player in datas["listJoueurInscrit"]:
-            if category.startswith("S"): addPlayerinPlayersList(players, player, category)
-            else : addPlayersAndTeamInLists(players, teams, player, category)
+            if category.startswith("S"): addPlayerinPlayersList(players, player, category, False)
+            else : addPlayersAndTeamInLists(players, teams, player, category, False)
+        for player in datas["listJoueurAttente"]:
+            if category.startswith("S"): addPlayerinPlayersList(players, player, category, True)
+            else : addPlayersAndTeamInLists(players, teams, player, category, True)
     return players, teams
 
 def getMatchsInformations():
@@ -195,16 +198,16 @@ def unschedule(match):
     url = os.environ.get("UnscheduleUrl").replace("MATCHFFTID", str(match.fftId))
     return sendGetRequest(url)
 
-def addPlayerinPlayersList(players, player, category):
+def addPlayerinPlayersList(players, player, category, waitingList):
     fftId = player["joueur1Id"]
     inscriptionId = player["inscriptionId"]
     firstName = player["joueur1Prenom"].title()
     lastName = player["joueur1Nom"].upper()
     club = player["clubJoueur1"]
     ranking = player["classementJoueur1"]
-    addPlayer(players, fftId, inscriptionId, firstName, lastName, club, ranking, category)
+    addPlayer(players, fftId, inscriptionId, firstName, lastName, club, ranking, category, waitingList)
 
-def addPlayersAndTeamInLists(players, teams, player, category):
+def addPlayersAndTeamInLists(players, teams, player, category, waitingList):
     fftId1 = player["joueur1Id"]
     inscriptionId1 = player["inscriptionId"]
     firstName1 = player["joueur1Prenom"].title()
@@ -212,7 +215,7 @@ def addPlayersAndTeamInLists(players, teams, player, category):
     club = player["clubJoueur1"]
     doubleRanking = player["classementJoueur1"]
     ranking = rankingsRepository.getSimpleRankingByDoubleRanking(session, doubleRanking)
-    addPlayer(players, fftId1, inscriptionId1, firstName1, lastName1, club, ranking, category)
+    addPlayer(players, fftId1, inscriptionId1, firstName1, lastName1, club, ranking, category, waitingList)
     if player["joueur2Nom"]:
         fftId2 = player["joueur2Id"]
         inscriptionId2 = player["inscriptionId"]
@@ -221,19 +224,22 @@ def addPlayersAndTeamInLists(players, teams, player, category):
         club = player["clubJoueur2"]
         doubleRanking = player["classementJoueur2"]
         ranking = rankingsRepository.getSimpleRankingByDoubleRanking(session, doubleRanking)
-        addPlayer(players, fftId2, inscriptionId2, firstName2, lastName2, club, ranking, category)
+        addPlayer(players, fftId2, inscriptionId2, firstName2, lastName2, club, ranking, category, waitingList)
         teamRanking = player["poidsEquipe"]
         fftIdTeam = player["inscriptionId"]
         addTeam(teams, fftIdTeam, firstName1, lastName1, firstName2, lastName2, teamRanking)
 
-def addPlayer(players, fftId, inscriptionId, firstName, lastName, club, ranking, category):
+def addPlayer(players, fftId, inscriptionId, firstName, lastName, club, ranking, category, waitingList):
     for player in players:
         if player["Firstname"] == firstName and player["Lastname"] == lastName:
             player[category] = True
             return
     newPlayer = {'FftId' : fftId, 'InscriptionId' : inscriptionId, 'Firstname': firstName, 'Lastname': lastName, 'Club': club, 'Ranking': ranking}
     for cat in constants.CATEGORIES:
-        newPlayer[cat] = (cat == category)
+        if (cat == category):
+            if waitingList: newPlayer[cat] = 2
+            else : newPlayer[cat] = 1
+        else : newPlayer[cat] = 0
     players.append(newPlayer)
 
 def addTeam(teams, fftId, firstName1, lastName1, firstName2, lastName2, teamRanking):
@@ -366,12 +372,23 @@ def getMatchName(matchs, matchFftId):
 def checkCategories(player, id):
     categoriesInDB = playersRepository.getCategoriesById(session, id)
     for (index, category) in [(0, "SM"), (1, "SD"), (2, "DM"), (3, "DD"), (4, "DX")]:
-        if (categoriesInDB[index] == 0 and player[category] == 1):
+        if (categoriesInDB[index] == 0 and player[category] == 1): #Inscription liste principale
             message = f"Nouvelle inscription : {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"
             messagesRepository.insertMessage(session, category, message)
-        elif (categoriesInDB[index] == 1 and player[category] == 0):
-            newPlayer = [0, player["Firstname"], player["Lastname"], player["Ranking"], player["Club"]]
+        elif (categoriesInDB[index] == 1 and player[category] == 0): #Désinscription liste principale
             message = f"Désinscription de {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"
+            messagesRepository.insertMessage(session, category, message)
+        elif (categoriesInDB[index] == 0 and player[category] == 2): #Inscription liste d'attente
+            message = f"Nouvelle inscription en liste d'attente : {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"
+            messagesRepository.insertMessage(session, category, message)
+        elif (categoriesInDB[index] == 2 and player[category] == 0): #Désinscription liste d'attente
+            message = f"Désinscription en liste d'attente de {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"
+            messagesRepository.insertMessage(session, category, message)
+        elif (categoriesInDB[index] == 1 and player[category] == 2): #Passage en liste d'attente
+            message = f"Passage de liste principale à liste d'attente de {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"
+            messagesRepository.insertMessage(session, category, message)
+        elif (categoriesInDB[index] == 2 and player[category] == 1): #Passage en liste principale
+            message = f"Passage de liste d'attente à liste principale de {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"
             messagesRepository.insertMessage(session, category, message)
 
 def checkRanking(player, id):
@@ -382,15 +399,19 @@ def checkRanking(player, id):
 
 def sendNotifAdd(player):
     message = f"Nouvelle inscription : {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"
+    waitingMessage = f"Nouvelle inscription en liste d'attente : {player['Firstname']} {player['Lastname']} ({player['Club']}) classé(e) {player['Ranking']}"
     messagesRepository.insertMessage(session, "G", message)
     for category in constants.CATEGORIES:
-        if player[category]: messagesRepository.insertMessage(session, category, message)
+        if player[category] == 1 : messagesRepository.insertMessage(session, category, message)
+        elif player[category] == 2 : messagesRepository.insertMessage(session, category, waitingMessage)
 
 def sendNotifRemove(player):
     message = f"Désinscription de {player.firstName} {player.lastName} ({player.club}) classé(e) {player.ranking}"
+    waitingMessage = f"Désinscription en liste d'attente de {player.firstName} {player.lastName} ({player.club}) classé(e) {player.ranking}"
     messagesRepository.insertMessage(session, "G", message)
     for (category, index) in [("SM", 6), ("SD", 7), ("DM", 8), ("DD", 9), ("DX", 10)]:
-        if player[index]: messagesRepository.insertMessage(session, category, message)
+        if player[index] == 1 : messagesRepository.insertMessage(session, category, message)
+        if player[index] == 2 : messagesRepository.insertMessage(session, category, waitingMessage)
 
 def parseProgram(program):
     if not program : return (None, None)
