@@ -222,10 +222,10 @@ def addWhiteFont(sheet):
     sheet.conditional_formatting.add('A1:ZZ1048576', rule)
 
 def addCourtColor(sheet):
-    rule1 = FormulaRule(formula=['AND($C2=2,D2<>0)'], fill=PatternFill(start_color="D9D9D9", end_color="D9D9D9", fill_type="solid"))
-    rule2 = FormulaRule(formula=['AND($C2=2,D2=0)'], fill=PatternFill(start_color="D9D9D9", end_color="D9D9D9", fill_type="solid"), font=Font(color="D9D9D9"))
-    rule3 = FormulaRule(formula=['AND($C2=3,D2<>0)'], fill=PatternFill(start_color="A6A6A6", end_color="A6A6A6", fill_type="solid"))
-    rule4 = FormulaRule(formula=['AND($C2=3,D2=0)'], fill=PatternFill(start_color="A6A6A6", end_color="A6A6A6", fill_type="solid"), font=Font(color="A6A6A6"))
+    rule1 = FormulaRule(formula=['AND(OR($C2=2,$C2="2"),D2<>0)'], fill=PatternFill(start_color="D9D9D9", end_color="D9D9D9", fill_type="solid"))
+    rule2 = FormulaRule(formula=['AND(OR($C2=2,$C2="2"),D2=0)'], fill=PatternFill(start_color="D9D9D9", end_color="D9D9D9", fill_type="solid"), font=Font(color="D9D9D9"))
+    rule3 = FormulaRule(formula=['AND(OR($C2=3,$C2="3"),D2<>0)'], fill=PatternFill(start_color="A6A6A6", end_color="A6A6A6", fill_type="solid"))
+    rule4 = FormulaRule(formula=['AND(OR($C2=3,$C2="3"),D2=0)'], fill=PatternFill(start_color="A6A6A6", end_color="A6A6A6", fill_type="solid"), font=Font(color="A6A6A6"))
     for rule in [rule1, rule2, rule3, rule4]:
         sheet.conditional_formatting.add('D2:L1048576', rule)
 
