@@ -282,6 +282,11 @@ def addMatch(matchs, match, matchNumber, tabName):
     if match["haveQe"]:
         if match["position"] == "TOP" and not player2Id : player2Id = "QE"
         if match["position"] == "BOTTOM" and not player1Id : player1Id = "QE"
+        if match["position"] == "CLASSIQUE" and not player1Id : player1Id = "QE"
+        if match["position"] == "CLASSIQUE" and not player2Id : player2Id = "QE"
+        #Pour les tableaux finaux, on peut avoir 2 QE (indépendamment de la position du match)
+        if match["typeDecoupage"] == "TFI" and not player1Id : player1Id = "QE"
+        if match["typeDecoupage"] == "TFI" and not player2Id : player2Id = "QE"
     matchName = category + str(matchNumber).zfill(2)
     program = match["dateProgrammation"]
     (day, hour) = parseProgram(program)
