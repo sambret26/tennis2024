@@ -17,6 +17,9 @@ class SettingsRepository:
     def getCalendarStatus(self, session):
         return session.query(Setting.state).filter(Setting.data == "CalendarState").scalar()
 
+    def isRefreshTokenOk(self, session):
+        return session.query(Setting.state).filter(Setting.data == "RefreshTokenOk").scalar()
+
     def setCalendarActive(self, session, value):
         session.query(Setting).filter(Setting.data == "CalendarActive").update({Setting.state: value})
         session.commit()
@@ -27,4 +30,8 @@ class SettingsRepository:
 
     def setCalendarStatus(self, session, value):
         session.query(Setting).filter(Setting.data == "CalendarState").update({Setting.state: value})
+        session.commit()
+
+    def setRefreshTokenOk(self, session, value):
+        session.query(Setting).filter(Setting.data == "RefreshTokenOk").update({Setting.state: value})
         session.commit()

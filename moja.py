@@ -7,6 +7,7 @@ import requests
 import os
 
 # My packages
+from databases.repositories.settingsRepository import SettingsRepository
 from databases.repositories.messagesRepository import MessagesRepository
 from databases.repositories.rankingsRepository import RankingsRepository
 from databases.repositories.playersRepository import PlayersRepository
@@ -17,6 +18,7 @@ from databases.base import engine, session
 from constants import constants
 import functions as F
 
+settingsRepository = SettingsRepository(engine)
 messagesRepository = MessagesRepository(engine)
 rankingsRepository = RankingsRepository(engine)
 playersRepository = PlayersRepository(engine)
@@ -30,7 +32,9 @@ accessToken = None
 tokenExpiry = None
 
 def sendGetRequest(url):
-    headers = {"Authorization" : f"Bearer {getToken()}"}
+    token = getToken()
+    if token == 401 : return 401
+    headers = {"Authorization" : f"Bearer {token}"}
     response = requests.get(url, headers = headers)
     if response.status_code == 200:
         return response.json()
@@ -84,23 +88,30 @@ def getToken():
     print("Erreur lors de la récupération du token")
     print(response.text)
     print(response.json())
-    return None
+    if settingsRepository.isRefreshTokenOk(session):
+        messagesRepository.insertMessage(session, "ERROR", "Le token est expiré. L'application va cesser de fonctionner.")
+        settingsRepository.setRefreshTokenOk(session, 0)
+    return 401
 
 def getHomologationId():
     competition = sendGetRequest(os.environ.get("CompetitionUrl"))
-    if not competition : return None
+    if competition == 401 : return 401
     return str(competition["competitions"][0]["homologationId"])
 
 def getEpreuves():
-    return sendGetRequest(os.environ.get("EpreuvesUrl").replace("HOMOLOGATION_ID", getHomologationId()))
+    homologationId = getHomologationId()
+    if homologationId == 401: return 401
+    return sendGetRequest(os.environ.get("EpreuvesUrl").replace("HOMOLOGATION_ID", homologationId))
 
 def getPlayersInformations(retry=5):
     players = []
     teams = []
     epreuves = getEpreuves()
+    if epreuves == 401 : return 401, 401
     for epreuve in epreuves:
         category = epreuve["libelle"][0:2]
         datas = sendGetRequest(os.environ.get("EpreuvesDataUrl").replace("EPREUVE_ID", str(epreuve['epreuveId'])))
+        if datas == 401 : return 401, 401
         for player in datas["listJoueurInscrit"]:
             if category.startswith("S"): addPlayerinPlayersList(players, player, category, False)
             else : addPlayersAndTeamInLists(players, teams, player, category, False)
@@ -112,10 +123,12 @@ def getPlayersInformations(retry=5):
 def getMatchsInformations():
     matchs = []
     epreuves = getEpreuves()
+    if epreuves == 401 : return 401
     for epreuve in epreuves:
         matchNumber = 1
         tabNumber = 1
         datas = sendGetRequest(os.environ.get("EpreuvesDataUrl").replace("EPREUVE_ID", str(epreuve['epreuveId'])))
+        if datas == 401 : return 401
         positionOrder = {"TOP": 0, "CLASSIQUE": 1, "BOTTOM": 2}
         for decoupage in datas["decoupageDisplayList"]:
             if decoupage["typeDecoupage"] == "POU" :
@@ -124,6 +137,7 @@ def getMatchsInformations():
                 url = os.environ.get("MatchsUrl").replace("DECOUPAGE", str(decoupage['decoupageId']))
                 url = f"https://moja.fft.fr/moja/api/spa/tableaux/{decoupage['tableauActifId']}/matchs"
             tabDatas = sendGetRequest(url)
+            if tabDatas == 401 : return 401
             if decoupage["typeDecoupage"] == "POU":
                 tabName = "TP" + epreuve["libelle"][0:2]
             elif decoupage["typeDecoupage"] == "TFI":
@@ -143,7 +157,7 @@ def getMatchsInformations():
 def getCourtInformations():
     list = []
     competition = sendGetRequest(os.environ.get("CompetitionUrl"))
-    if not competition : return None
+    if competition == 401 : return 401
     courts = competition["competitions"][0]["courts"]
     for court in courts:
         newCourt = {
@@ -155,7 +169,9 @@ def getCourtInformations():
 
 def setPlayer(matchFftId, player, letter):
     url = os.environ.get("SetPlayerUrl").replace("PLAYER", letter).replace("MATCHFFTID", str(matchFftId))
-    headers = {"Authorization" : f"Bearer {getToken()}", "Content-Type" : "application/json"}
+    token = getToken()
+    if token == 401 : return False
+    headers = {"Authorization" : f"Bearer {token}", "Content-Type" : "application/json"}
     json = {
         "inscriptionId" : player.inscriptionId,
         "joueur1Id" : player.fftId,
@@ -167,7 +183,9 @@ def setPlayer(matchFftId, player, letter):
 
 def deletePlayer(matchFftId, player, letter):
     url = os.environ.get("UnsetPlayerUrl").replace("PLAYER", letter).replace("MATCHFFTID", str(matchFftId))
-    headers = {"Authorization" : f"Bearer {getToken()}", "Content-Type" : "application/json"}
+    token = getToken()
+    if token == 401 : return False
+    headers = {"Authorization" : f"Bearer {token}", "Content-Type" : "application/json"}
     json = {
         "inscriptionId" : player.inscriptionId,
         "joueur1Id" : player.fftId,
@@ -185,10 +203,14 @@ def schedule(matchFftId):
         return
     date = F.getStart(match.day, match.hour)
     url = os.environ.get("ScheduleUrl").replace("MATCHFFTID", str(matchFftId))
-    headers = {"Authorization" : f"Bearer {getToken()}", "Content-Type" : "application/json"}
+    token = getToken()
+    if token == 401 : return False
+    homologationId = getHomologationId()
+    if homologationId == 401 : return False
+    headers = {"Authorization" : f"Bearer {token}", "Content-Type" : "application/json"}
     json = {
         "matchId" : match.fftId,
-        "homologationId" : getHomologationId(),
+        "homologationId" : homologationId,
         "courtId" : courtFftId,
         "duree": 90,
         "dateProgrammation" : date,
@@ -359,16 +381,22 @@ def updateDBCourts(courts):
 
 def updatePlayers():
     players, teams = getPlayersInformations()
+    if players == 401 : return 401
     updateDBPlayers(players)
     updateDBTeams(teams)
+    return 200
 
 def updateMatchs():
     matchs = getMatchsInformations()
+    if matchs == 401 : return 401
     updateDBMatchs(matchs)
+    return 200
 
 def updateCourts():
     courts = getCourtInformations()
+    if courts == 401 : return 401
     updateDBCourts(courts)
+    return 200
 
 def getMatchName(matchs, matchFftId):
     for match in matchs:

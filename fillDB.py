@@ -29,6 +29,7 @@ def fill():
     c.execute(query, ('CalendarActive', 1))
     c.execute(query, ('MojaActive', 1))
     c.execute(query, ('CalendarState', 0))
+    c.execute(query, ('RefreshTokenOk', 1))
     query = "INSERT INTO Rankings (Simple, Double, Fft) VALUES (?, ?, ?)"
     c.execute(query, ('NC', '19', 60))
     c.execute(query, ('40', '18', 65))

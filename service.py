@@ -34,16 +34,19 @@ async def maj(bot, ctx):
     if number == 3: await majCourts(ctx)
 
 async def majPlayers(ctx):
-    FFT.updatePlayers()
-    await ctx.send(constants.UPDATE_PLAYERS_OK)
+    statusCode = FFT.updatePlayers()
+    if statusCode == 200 : await ctx.send(constants.UPDATE_PLAYERS_OK)
+    else : await ctx.send(constants.UPDATE_PLAYERS_KO.replace("CODE", str(statusCode)))
 
 async def majMatchs(ctx):
-    FFT.updateMatchs()
-    await ctx.send(constants.UPDATE_MATCHS_OK)
+    statusCode = FFT.updateMatchs()
+    if statusCode == 200 : await ctx.send(constants.UPDATE_MATCHS_OK)
+    else : await ctx.send(constants.UPDATE_MATCHS_KO.replace("CODE", str(statusCode)))
 
 async def majCourts(ctx):
-    FFT.updateCourts()
-    await ctx.send(constants.UPDATE_COURTS_OK)
+    statusCode = FFT.updateCourts()
+    if statusCode == 200 : await ctx.send(constants.UPDATE_COURTS_OK)
+    else : await ctx.send(constants.UPDATE_COURTS_KO.replace("CODE", str(statusCode)))
 
 async def nb(bot, ctx):
     category = channelsRepository.getChannelCategory(session, ctx.channel.id)

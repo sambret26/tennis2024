@@ -14,11 +14,15 @@ import fillDB
 import os
 
 # My packages
+from databases.repositories.settingsRepository import SettingsRepository
 from databases.base import Base, engine, session
 from constants import constants
 import cal as calendar
 import functions as F
 import service
+
+# Repositories
+settingsRepository = SettingsRepository(engine)
 
 # Dotenv
 load_dotenv()
@@ -266,6 +270,7 @@ async def recurring_task():
     await bot.wait_until_ready()
     load = await F.loadDB(bot)
     if not load and os.environ.get("Prod") == "true" : fillDB.fill()
+    settingsRepository.setRefreshTokenOk(session, 1)
     while not bot.is_closed():
         schedule.run_pending()
         await asyncio.sleep(1)

@@ -1,6 +1,9 @@
 # [SUCCESS]
 DELETE_CALENDAR = "Suppression des evenements\nAttention, le traitement peut être long, et mettre en pause le reste des opérations"
 UPDATE_CALENDAR = "Mise à jour du calendrier\nAttention, le traitement peut être long, et mettre en pause le reste des opérations"
+UPDATE_PLAYERS_KO = "/!\ La liste des joueurs n'a pas été mise à jour correctement (Code d'erreur CODE)"
+UPDATE_MATCHS_KO = "/!\ La liste des matchs n'a pas été mise à jour correctement (Code d'erreur CODE)"
+UPDATE_COURTS_KO = "/!\ La liste des courts n'a pas été mise à jour correctement (Code d'erreur CODE)"
 DB_BACKUP = "L'ancienne base de données à été sauvegardée dans le fichier FILENAME"
 BDD_RESTAURED = "La base de données à été restaurée à partir du fichier FILENAME"
 NB_INSCRITS_BY_CAT = "Nombre d'inscrits par classement pour chaque catégorie :"
