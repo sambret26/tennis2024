@@ -116,6 +116,7 @@ def getMatchsInformations():
         matchNumber = 1
         tabNumber = 1
         datas = sendGetRequest(os.environ.get("EpreuvesDataUrl").replace("EPREUVE_ID", str(epreuve['epreuveId'])))
+        positionOrder = {"TOP": 0, "CLASSIQUE": 1, "BOTTOM": 2}
         for decoupage in datas["decoupageDisplayList"]:
             if decoupage["typeDecoupage"] == "POU" :
                 url = os.environ.get("MatchsUrlPoules").replace("DECOUPAGE", str(decoupage['decoupageId']))
@@ -126,10 +127,10 @@ def getMatchsInformations():
             if decoupage["typeDecoupage"] == "POU":
                 tabName = "TP" + epreuve["libelle"][0:2]
             elif decoupage["typeDecoupage"] == "TFI":
-                tabDatas = sorted(tabDatas, key=lambda x: (int(x["numeroMatch"][3]), int(x["numeroMatch"][1]), int(x["numeroMatch"][5])))
+                tabDatas = sorted(tabDatas, key=lambda x: (int(x["numeroMatch"][3]), int(x["numeroMatch"][1]), positionOrder[x["position"]], int(x["numeroMatch"][5])))
                 tabName = "TF" + epreuve["libelle"][0:2]
             else :
-                tabDatas = sorted(tabDatas, key=lambda x: (int(x["numeroMatch"][3]), int(x["numeroMatch"][1]), int(x["numeroMatch"][5])))
+                tabDatas = sorted(tabDatas, key=lambda x: (int(x["numeroMatch"][3]), int(x["numeroMatch"][1]), positionOrder[x["position"]], int(x["numeroMatch"][5])))
                 tabName = "T" + str(tabNumber) + epreuve["libelle"][0:2]
                 tabNumber += 1
             for match in matchs:
