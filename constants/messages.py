@@ -9,6 +9,7 @@ BDD_RESTAURED = "La base de données à été restaurée à partir du fichier FI
 NB_INSCRITS_BY_CAT = "Nombre d'inscrits par classement pour chaque catégorie :"
 COURT_UPDATE = "Le match MATCH_NAME à été déplacé sur le court COURT"
 RESULT_UPDATE = "Le résultat du match MATCH_NAME a été mis à jour"
+STARTED_APPLICATION = "L'application a (re)démarré avec succès"
 UPDATE_PLAYERS_OK = "La liste des joueurs a été mise à jour"
 CAL_UNSET = "L'état du calendrier à bien été réinitialisé"
 UPDATE_MATCHS_OK = "La liste des matchs a été mise à jour"

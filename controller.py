@@ -15,6 +15,7 @@ import os
 
 # My packages
 from databases.repositories.settingsRepository import SettingsRepository
+from databases.repositories.messagesRepository import MessagesRepository
 from databases.base import Base, engine, session
 from constants import constants
 import cal as calendar
@@ -23,6 +24,7 @@ import service
 
 # Repositories
 settingsRepository = SettingsRepository(engine)
+messagesRepository = MessagesRepository(engine)
 
 # Dotenv
 load_dotenv()
@@ -271,6 +273,9 @@ async def recurring_task():
     load = await F.loadDB(bot)
     if not load and os.environ.get("Prod") == "true" : fillDB.fill()
     settingsRepository.setRefreshTokenOk(session, 1)
+    #Log de démarrage dans le channel Error pour "clore" les erreurs
+    messagesRepository.insertMessage(session, "ERROR", constants.STARTED_APPLICATION)
+    await F.sendMessagesByCategory(bot, "ERROR")
     while not bot.is_closed():
         schedule.run_pending()
         await asyncio.sleep(1)
