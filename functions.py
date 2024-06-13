@@ -290,8 +290,8 @@ def getStart(day, hour):
     d, m = day.split("/")
     h, min = hour.lower().split("h")
     if min == '' : min = "00"
-    if len(h) == 1 : h = "0" + h
     if d == "15" : d, h = startOneDayBefore(d, h)
+    if len(h) == 1 : h = "0" + h
     return "2024-{}-{}T{}:{}:00".format(m, d, h, min)
 
 def startOneDayBefore(day, hour):
