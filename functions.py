@@ -291,7 +291,13 @@ def getStart(day, hour):
     h, min = hour.lower().split("h")
     if min == '' : min = "00"
     if len(h) == 1 : h = "0" + h
+    if d == "15" : d, h = startOneDayBefore(d, h)
     return "2024-{}-{}T{}:{}:00".format(m, d, h, min)
+
+def startOneDayBefore(day, hour):
+    day = "16"
+    hour = hour - 10
+    return day, hour
 
 def getEnd(day, hour):
     d, m = day.split("/")

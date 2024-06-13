@@ -455,9 +455,17 @@ def parseProgram(program):
     min = program[14:16]
     if h[0] == "0" : h = h[1]
     if min == "00" : min = ""
+    if d == "16" : d, h = startOneDayBefore(d, h)
     day = f"{d}/{m}"
     hour = f"{h}H{min}"
     return (day, hour)
+
+def startOneDayBefore(d, h):
+    d = "15"
+    if h == "5" : h = "15"
+    if h == "6" : h = "16"
+    if h == "8" : h = "18"
+    return (d, h)
 
 def getPlayersIds(match):
     player1Id = None
