@@ -43,6 +43,18 @@ def sendGetRequest(url):
     print(response.json())
     return None
 
+def sendGetRequestWithoutResponse(url):
+    token = getToken()
+    if token == 401 : return 401
+    headers = {"Authorization" : f"Bearer {token}"}
+    response = requests.get(url, headers = headers)
+    if response.status_code == 200:
+        return response.status_code
+    print("Erreur de la requete get : " + url)
+    print(response.text)
+    print(response.json())
+    return None
+
 def sendPostRequestWithJson(url, headers, json):
     response = requests.post(url, headers=headers, json=json)
     if response.status_code == 200:
@@ -219,7 +231,7 @@ def schedule(matchFftId):
 
 def unschedule(match):
     url = os.environ.get("UnscheduleUrl").replace("MATCHFFTID", str(match.fftId))
-    return sendGetRequest(url)
+    return sendGetRequestWithoutResponse(url)
 
 def addPlayerinPlayersList(players, player, category, waitingList):
     fftId = player["joueur1Id"]
