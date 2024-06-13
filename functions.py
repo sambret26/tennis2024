@@ -296,7 +296,7 @@ def getStart(day, hour):
 
 def startOneDayBefore(day, hour):
     day = "16"
-    hour = hour - 10
+    hour = str(int(hour) - 10)
     return day, hour
 
 def getEnd(day, hour):
