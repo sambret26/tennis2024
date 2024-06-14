@@ -213,18 +213,20 @@ def schedule(matchFftId):
     if not match.day or not match.hour :
         unschedule(match)
         return
-    date = F.getStart(match.day, match.hour)
+    date, trunc = F.getStartTrunc(match.day, match.hour)
     url = os.environ.get("ScheduleUrl").replace("MATCHFFTID", str(matchFftId))
     token = getToken()
     if token == 401 : return False
     homologationId = getHomologationId()
     if homologationId == 401 : return False
     headers = {"Authorization" : f"Bearer {token}", "Content-Type" : "application/json"}
+    duration = 90
+    if trunc: duration = 60
     json = {
         "matchId" : match.fftId,
         "homologationId" : homologationId,
         "courtId" : courtFftId,
-        "duree": 90,
+        "duree": duration,
         "dateProgrammation" : date,
     }
     return sendPostRequestWithJson(url, headers, json)
@@ -467,17 +469,23 @@ def parseProgram(program):
     min = program[14:16]
     if h[0] == "0" : h = h[1]
     if min == "00" : min = ""
-    if d == "16" : d, h = startOneDayBefore(d, h)
+    if d == "16" : d, h, min = startOneDayBefore(d, h)
     day = f"{d}/{m}"
     hour = f"{h}H{min}"
     return (day, hour)
 
 def startOneDayBefore(d, h):
     d = "15"
-    if h == "5" : h = "15"
-    if h == "6" : h = "16"
-    if h == "8" : h = "18"
-    return (d, h)
+    if h == "7" :
+        h = "15"
+        min = ""
+    if h == "8" :
+        h = "16"
+        min = "30"
+    if h == "9" :
+        h = "18"
+        min = ""
+    return (d, h, min)
 
 def getPlayersIds(match):
     player1Id = None

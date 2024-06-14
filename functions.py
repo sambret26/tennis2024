@@ -286,17 +286,30 @@ def getColor(category):
     if category == "DX": return 5
     return 8
 
+def getStartTrunc(day, hour):
+    d, m = day.split("/")
+    h, min = hour.lower().split("h")
+    if min == '' : min = "00"
+    trunc = False
+    if d == "15" :
+        d, h, min = startOneDayBefore(d, h)
+        trunc = True
+    if len(h) == 1 : h = "0" + h
+    return "2024-{}-{}T{}:{}:00".format(m, d, h, min), trunc
+
 def getStart(day, hour):
     d, m = day.split("/")
     h, min = hour.lower().split("h")
     if min == '' : min = "00"
-    if d == "15" : d, h = startOneDayBefore(d, h)
     if len(h) == 1 : h = "0" + h
     return "2024-{}-{}T{}:{}:00".format(m, d, h, min)
 
 def startOneDayBefore(day, hour):
     day = "16"
-    hour = str(int(hour) - 10)
+    min = ""
+    if hour == "15" : hour = "7"
+    if hour == "16" : hour = "8"
+    if hour == "18" : hour = "9"
     return day, hour
 
 def getEnd(day, hour):
