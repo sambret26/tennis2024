@@ -310,7 +310,7 @@ def startOneDayBefore(day, hour):
     if hour == "15" : hour = "7"
     if hour == "16" : hour = "8"
     if hour == "18" : hour = "9"
-    return day, hour
+    return day, hour, "00"
 
 def getEnd(day, hour):
     d, m = day.split("/")

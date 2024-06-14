@@ -469,12 +469,12 @@ def parseProgram(program):
     min = program[14:16]
     if h[0] == "0" : h = h[1]
     if min == "00" : min = ""
-    if d == "16" : d, h, min = startOneDayBefore(d, h)
+    if d == "16" : d, h, min = startOneDayBefore(d, h, min)
     day = f"{d}/{m}"
     hour = f"{h}H{min}"
     return (day, hour)
 
-def startOneDayBefore(d, h):
+def startOneDayBefore(d, h, min):
     d = "15"
     if h == "7" :
         h = "15"
