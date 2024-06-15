@@ -241,7 +241,7 @@ async def pgWhatsapp(bot):
     if matchs == None or matchs == []:
         await channel.send(constants.NO_PG.replace("DATE", date))
         return
-    message += constants.PG.replace("DATE", date)
+    message = constants.PG.replace("DATE", date)
     matchs = sorted(matchs, key=sort_key)
     for match in matchs:
         player1 = F.getPlayerFromPlayerIdInDB(match[0], match[1])
