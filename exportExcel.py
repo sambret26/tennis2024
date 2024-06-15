@@ -136,6 +136,9 @@ def addSchedule(sheet, date):
     if isNotPast(date):
         timeSlots1 = addSlot(sortedMatchsCourt1, date, court1.id)
         timeSlots2 = addSlot(sortedMatchsCourt2, date, court2.id)
+    else :
+        timeSlots1 = sortedMatchsCourt1
+        timeSlots2 = sortedMatchsCourt2
     timeSlots = timeSlots1 + timeSlots2 + sortedMatchsCourt3
     if len(timeSlots) == 0: return
     timeSlots.sort(key=lambda ts: inMinutes(ts[0]))
