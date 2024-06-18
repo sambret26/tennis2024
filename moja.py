@@ -489,8 +489,8 @@ def getPlayersIds(match):
     if len(match["joueurList"]) > 1 :
         player2 = match["joueurList"][1]
         player2Id = getPlayerIdByInfos(player2)
-    if match["position"] == "TOP" : return player1Id, player2Id
-    return player2Id, player1Id
+    if match["position"] == "BOTTOM" : return player2Id, player1Id
+    return player1Id, player2Id
 
 def getTeamsIds(match):
     player1Id = None
