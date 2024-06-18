@@ -311,8 +311,8 @@ def addMatch(matchs, match, matchNumber, tabName):
         if match["position"] == "TOP" and not player2Id : player2Id = getMatchName(matchs, previousMatch["matchId"])
         if match["position"] in ["BOTTOM", "CLASSIQUE"] and not player1Id : player1Id = getMatchName(matchs, previousMatch["matchId"])
     if len(match["matchsPrecedents"]) == 2 :
-        player1Id = getMatchName(matchs, match["matchsPrecedents"][0]["matchId"])
-        player2Id = getMatchName(matchs, match["matchsPrecedents"][1]["matchId"])
+        if not player1Id : player1Id = getMatchName(matchs, match["matchsPrecedents"][0]["matchId"])
+        if not player2Id : player2Id = getMatchName(matchs, match["matchsPrecedents"][1]["matchId"])
     if match["haveQe"]:
         if match["position"] == "TOP" and not player2Id : player2Id = "QE"
         if match["position"] == "BOTTOM" and not player1Id : player1Id = "QE"
