@@ -286,13 +286,10 @@ def addTeam(teams, fftId, firstName1, lastName1, firstName2, lastName2, teamRank
 def addMatch(matchs, match, matchNumber, tabName):
     category = match["nomCategorie"][0:2]
     if category.startswith("S"):
-        player1Id, player2Id = getPlayersIds(match)
+        player1Id, player2Id, winnerId = getPlayersIds(match)
     else:
-        player1Id, player2Id = getTeamsIds(match)
+        player1Id, player2Id, winnerId = getTeamsIds(match)
     winner = match["equipeGagnante"]
-    winnerId = None
-    if winner == "equipeA" : winnerId = player1Id
-    elif winner == "equipeB" : winnerId = player2Id
     finish = (winnerId != None)
     score = ""
     sets = match["sets"]
@@ -489,8 +486,12 @@ def getPlayersIds(match):
     if len(match["joueurList"]) > 1 :
         player2 = match["joueurList"][1]
         player2Id = getPlayerIdByInfos(player2)
-    if match["position"] == "BOTTOM" : return player2Id, player1Id
-    return player1Id, player2Id
+    winner = match["equipeGagnante"]
+    winnerId = None
+    if winner == "equipeA" : winnerId = player1Id
+    elif winner == "equipeB" : winnerId = player2Id
+    if match["position"] == "TOP" : return player1Id, player2Id, winnerId
+    return player2Id, player1Id, winnerId
 
 def getTeamsIds(match):
     player1Id = None
@@ -513,8 +514,12 @@ def getTeamsIds(match):
     if(player1Id and player2Id) : team1Id = teamsRepository.getTeamByPlayersIds(session, player1Id, player2Id)
     team2Id = None
     if(player3Id and player4Id) : team2Id = teamsRepository.getTeamByPlayersIds(session, player3Id, player4Id)
-    if match["position"] == "TOP" : return team1Id, team2Id
-    return team2Id, team1Id
+    winner = match["equipeGagnante"]
+    winnerId = None
+    if winner == "equipeA" : winnerId = team1Id
+    elif winner == "equipeB" : winnerId = team2Id
+    if match["position"] == "TOP" : return team1Id, team2Id, winnerId
+    return team2Id, team1Id, winnerId
 
 def getPlayerIdByInfos(player):
     lastName = player["nom"].upper()
