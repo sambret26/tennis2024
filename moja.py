@@ -142,6 +142,8 @@ def getMatchsInformations():
         datas = sendGetRequest(os.environ.get("EpreuvesDataUrl").replace("EPREUVE_ID", str(epreuve['epreuveId'])))
         if datas == 401 : return 401
         positionOrder = {"TOP": 0, "CLASSIQUE": 1, "BOTTOM": 2}
+        label = epreuve["libelle"][0:2]
+        if epreuve["libelle"][-3:] == "(C)" : label = "C" + label
         for decoupage in datas["decoupageDisplayList"]:
             if decoupage["typeDecoupage"] == "POU" :
                 url = os.environ.get("MatchsUrlPoules").replace("DECOUPAGE", str(decoupage['decoupageId']))
@@ -151,18 +153,18 @@ def getMatchsInformations():
             tabDatas = sendGetRequest(url)
             if tabDatas == 401 : return 401
             if decoupage["typeDecoupage"] == "POU":
-                tabName = "TP" + epreuve["libelle"][0:2]
+                tabName = "TP" + label
             elif decoupage["typeDecoupage"] == "TFI":
                 tabDatas = sorted(tabDatas, key=lambda x: (int(x["numeroMatch"][3]), int(x["numeroMatch"][1]), positionOrder[x["position"]], int(x["numeroMatch"][5])))
-                tabName = "TF" + epreuve["libelle"][0:2]
+                tabName = "TF" + label
             else :
                 tabDatas = sorted(tabDatas, key=lambda x: (int(x["numeroMatch"][3]), int(x["numeroMatch"][1]), positionOrder[x["position"]], int(x["numeroMatch"][5])))
-                tabName = "T" + str(tabNumber) + epreuve["libelle"][0:2]
+                tabName = "T" + str(tabNumber) + label
                 tabNumber += 1
             for match in matchs:
                 if not match["nextRound"] : match["nextRound"] = tabName
             for match in tabDatas :
-                addMatch(matchs, match, matchNumber, tabName)
+                addMatch(matchs, match, matchNumber, tabName, label)
                 matchNumber += 1
     return matchs
 
@@ -283,9 +285,8 @@ def addTeam(teams, fftId, firstName1, lastName1, firstName2, lastName2, teamRank
     newTeam = {'FftId' : fftId, 'Firstname1': firstName1, 'Lastname1': lastName1, 'Firstname2': firstName2, 'Lastname2': lastName2, 'Ranking': teamRanking}
     teams.append(newTeam)
 
-def addMatch(matchs, match, matchNumber, tabName):
-    category = match["nomCategorie"][0:2]
-    if category.startswith("S"):
+def addMatch(matchs, match, matchNumber, tabName, category):
+    if category.startswith("S") or category.startswith("C"):
         player1Id, player2Id, winnerId = getPlayersIds(match)
     else:
         player1Id, player2Id, winnerId = getTeamsIds(match)
